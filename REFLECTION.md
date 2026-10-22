@@ -14,7 +14,7 @@ Pick a property you wrote that passes on the correct implementation but
 kills few or no mutants. Why is it still a *valid* property? Describe a
 concrete bug (not one of our mutants) that it *would* catch.
 
-A property I wrote that passes on the correct implementation but kills few or no mutants is if the secret gets mutated and compared with the original secret, it will not result in a correct response. This is still a valid property because it makes sure that a wrong answer is not treated as correct. It would catch a bug where all greens were hardcoded in as the answer.
+A property I wrote that passes on the correct implementation but kills few or no mutants is if the secret gets mutated and compared with the original secret, it will not result in a correct response. This is still a valid property because it makes sure that a wrong answer is not treated as correct. It would catch a bug where greens and yellows were both considered equal to the answer.
 
 ### 2. A generator problem, not a property problem
 
