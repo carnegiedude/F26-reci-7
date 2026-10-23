@@ -17,7 +17,7 @@ const intervalList = fc.array(interval);
 
 //creates a list where it creates two tuples, one starting at 
 // Creates two intervals where the second starts one integer after the first ends.
-const intervaltouchList: fc.Arbitrary<Interval[]> = fc
+const intervaladjacentList: fc.Arbitrary<Interval[]> = fc
   .tuple(
     fc.integer({ min: -1_000_000, max: 1_000_000 }),
     fc.integer({ min: -1_000_000, max: 1_000_000 }),
@@ -29,6 +29,19 @@ const intervaltouchList: fc.Arbitrary<Interval[]> = fc
     const second: Interval = [secondStart, secondStart + secondLength];
     return [first, second];
   });
+
+const touchingIntervalList: fc.Arbitrary<Interval[]> = fc
+.tuple(
+  fc.integer(), fc.nat(), fc.nat()
+)
+.map(([point, leftLength, rightLength]) => [
+  [point - leftLength, point], 
+  [point, point + rightLength],
+]);
+
+function isCovered(intervals: readonly Interval[], point: number): boolean {
+  return intervals.some(([start, end]) => start <= point && point <= end);
+}
 
 describe('mergeIntervals', () => {
   // Pattern: invariant. Every input interval lies inside some output interval.
@@ -45,8 +58,18 @@ describe('mergeIntervals', () => {
   // Add your properties here. Aim for at least one of each pattern:
   // invariant, algebraic, metamorphic, differential, conditional.
 
-// Pattern: invariant. Resulting intervals never overlap or touch.
+it.todo('the resulting intervals are sorted');
+// Pattern: invariant. Resulting intervals never overlap.
 it('The resulting intervals never overlap', () => {
+  fc.assert(
+    fc.property(touchingIntervalList, xs => {
+      const result = mergeIntervals(xs);
+      expect(result.slice(1).every((current, i) => result[i][1] < current[0])).toBe(true);
+    }),
+  );
+});
+// Pattern: invariant. Resulting intervals never touch.
+it('The resulting intervals never touch', () => {
   fc.assert(
     fc.property(intervalList, xs => {
       const result = mergeIntervals(xs);
@@ -63,12 +86,27 @@ it('merging again does not change the result', () => {
     }),
   );
 });
-it.todo('Metamorphic: Changing the order of the tuples in the array does not change the results');
-it.todo('Differential: there is no difference between the coverage of the input and output');
+// Pattern: metamorphic. Changing input order does not change the result.
+it('produces the same result when the input order is reversed', () => {
+  fc.assert(
+    fc.property(intervalList, xs => {
+      expect(mergeIntervals([...xs].reverse())).toEqual(mergeIntervals(xs));
+    }),
+  );
+});
+// Pattern: differential. Input and output cover the same points.
+it('preserves whether a point is covered', () => {
+  fc.assert(
+    fc.property(intervalList, fc.integer(), (xs, point) => {
+      expect(isCovered(mergeIntervals(xs), point)).toBe(isCovered(xs, point));
+    }),
+  );
+});
+it.todo('merges intervals when the ')
 // Pattern: conditional. Intervals separated by a gap do not merge.
 it('does not merge intervals when the second starts one after the first ends', () => {
   fc.assert(
-    fc.property(intervaltouchList, xs => {
+    fc.property(intervaladjacentList, xs => {
       expect(mergeIntervals(xs)).toEqual(xs);
     }),
   );

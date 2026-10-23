@@ -72,7 +72,7 @@ Finish your group's work from recitation, **on your own**. You may start from
 your group's code. Note your group members' names in `REFLECTION.md`.
 
 - Try to kill every public mutant reliably.
-- At least **one property of each of the five patterns**.
+- At least **one property of each of the five patterns**. x
 - Your generator must produce valid inputs by construction (no `.filter` or
   `fc.pre` to fix up invalid intervals). x
 - The conditional property ("already-disjoint input") must use a targeted
