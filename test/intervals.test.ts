@@ -10,10 +10,25 @@ import { mergeIntervals, type Interval } from '../src/intervals';
 //   // Pattern: invariant. The output is sorted.
 // (invariant, algebraic, metamorphic, differential, or conditional)
 
-// A first attempt at a generator. It has a problem: run the tests and read
-// the counterexample.
-const interval: fc.Arbitrary<Interval> = fc.tuple(fc.integer(), fc.integer());
+const interval: fc.Arbitrary<Interval> = fc
+  .tuple(fc.integer(), fc.integer())
+  .map(([a, b]) => [Math.min(a, b), Math.max(a, b)]);
 const intervalList = fc.array(interval);
+
+//creates a list where it creates two tuples, one starting at 
+// Creates two intervals where the second starts one integer after the first ends.
+const intervaltouchList: fc.Arbitrary<Interval[]> = fc
+  .tuple(
+    fc.integer({ min: -1_000_000, max: 1_000_000 }),
+    fc.integer({ min: -1_000_000, max: 1_000_000 }),
+    fc.integer({ min: 0, max: 1_000_000 }),
+  )
+  .map(([a, b, secondLength]) => {
+    const first: Interval = [Math.min(a, b), Math.max(a, b)];
+    const secondStart = first[1] + 1;
+    const second: Interval = [secondStart, secondStart + secondLength];
+    return [first, second];
+  });
 
 describe('mergeIntervals', () => {
   // Pattern: invariant. Every input interval lies inside some output interval.
@@ -29,4 +44,26 @@ describe('mergeIntervals', () => {
 
   // Add your properties here. Aim for at least one of each pattern:
   // invariant, algebraic, metamorphic, differential, conditional.
+
+// Pattern: invariant. Resulting intervals never overlap or touch.
+it('The resulting intervals never overlap', () => {
+  fc.assert(
+    fc.property(intervalList, xs => {
+      const result = mergeIntervals(xs);
+      expect(result.slice(1).every((current, i) => result[i][1] < current[0])).toBe(true);
+    }),
+  );
+});
+it.todo('the resulting');
+it.todo('Algebraic: there chouls be');
+it.todo('Metamorphic');
+it.todo('Differential');
+// Pattern: conditional. Intervals separated by a gap do not merge.
+it('does not merge intervals when the second starts one after the first ends', () => {
+  fc.assert(
+    fc.property(intervaltouchList, xs => {
+      expect(mergeIntervals(xs)).toEqual(xs);
+    }),
+  );
+});
 });

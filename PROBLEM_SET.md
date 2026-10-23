@@ -74,7 +74,7 @@ your group's code. Note your group members' names in `REFLECTION.md`.
 - Try to kill every public mutant reliably.
 - At least **one property of each of the five patterns**.
 - Your generator must produce valid inputs by construction (no `.filter` or
-  `fc.pre` to fix up invalid intervals).
+  `fc.pre` to fix up invalid intervals). x
 - The conditional property ("already-disjoint input") must use a targeted
   generator.
 
