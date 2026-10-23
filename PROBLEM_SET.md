@@ -55,9 +55,9 @@ they don't count toward the required properties.
 
 Finish what we started in recitation.
 
-- Try to kill every public mutant reliably. One of them survived Part 1.
+- Try to kill every public mutant reliably. One of them survived Part 1. x
 - At least **five** properties, including at least one invariant, one
-  conditional property, and one metamorphic property.
+  conditional property, and one metamorphic property. x
 - At least one property must use a **targeted generator**: a generator that
   constructs inputs satisfying the property's condition, rather than
   generating arbitrary inputs and discarding the ones that don't qualify.
@@ -76,7 +76,7 @@ your group's code. Note your group members' names in `REFLECTION.md`.
 - Your generator must produce valid inputs by construction (no `.filter` or
   `fc.pre` to fix up invalid intervals). x
 - The conditional property ("already-disjoint input") must use a targeted
-  generator.
+  generator. x
 
 ## Task 3: Reflection, `REFLECTION.md`
 

@@ -54,10 +54,17 @@ it('The resulting intervals never overlap', () => {
     }),
   );
 });
-it.todo('the resulting');
-it.todo('Algebraic: there chouls be');
-it.todo('Metamorphic');
-it.todo('Differential');
+// Pattern: algebraic. Merging is idempotent.
+it('merging again does not change the result', () => {
+  fc.assert(
+    fc.property(intervalList, xs => {
+      const merged = mergeIntervals(xs);
+      expect(mergeIntervals(merged)).toEqual(merged);
+    }),
+  );
+});
+it.todo('Metamorphic: Changing the order of the tuples in the array does not change the results');
+it.todo('Differential: there is no difference between the coverage of the input and output');
 // Pattern: conditional. Intervals separated by a gap do not merge.
 it('does not merge intervals when the second starts one after the first ends', () => {
   fc.assert(
